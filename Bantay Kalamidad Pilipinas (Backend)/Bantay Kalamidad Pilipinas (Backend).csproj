@@ -48,9 +48,10 @@
     <Compile Include="Database Manager.cs" />
     <Compile Include="Donor.cs" />
     <Compile Include="Login.cs" />
+    <Compile Include="Models\Pledge.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserModel.cs" />
+    <Compile Include="Models\UserModel.cs" />
     <Compile Include="Volunteer.cs" />
   </ItemGroup>
   <ItemGroup>

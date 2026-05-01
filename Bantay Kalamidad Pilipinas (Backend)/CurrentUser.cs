@@ -11,5 +11,6 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
         public static string Username;
         public static string Password;
         public static string Role;
+        public static string ID;
     }
 }
