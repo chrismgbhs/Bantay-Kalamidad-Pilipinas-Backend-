@@ -10,20 +10,27 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
     {
         public static void GoLogin()
         {
-            Console.Write("Username: ");
-            string username = Console.ReadLine();
+            Console.WriteLine("Please select your role:");
+            Console.WriteLine("1. Admin");
+            Console.WriteLine("2. Donor");
+            Console.WriteLine("3. Volunteer");
 
-            Console.Write("Password: ");
-            string password = Console.ReadLine();
-
-            UserModel user = new UserModel
+            switch (Console.ReadLine())
             {
-                Username = username,
-                Password = password
-            };
-
-            Database_Manager.Login(user.Username, user.Password);
-
+                case "1":
+                    Administrator.AdminLogin();
+                    break;
+                case "2":
+                    Donor.DonorLogin();
+                    break;
+                case "3":
+                    Volunteer.VolunteerLogin();
+                    break;
+                default:
+                    Console.WriteLine("Invalid selection. Please try again.");
+                    GoLogin();
+                    break;
+            }
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
         public static string connectionString = "Data Source=CCL2-10\\MSSQLSERVER01;Initial Catalog=\"Bantay Kalamidad Pilipinas\";Persist Security Info=True;User ID=sa;Password=ccl2;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Application Name=\"SQL Server Management Studio\";";
 
         // LOGIN FUNCTION
-        public static bool Login(string username, string password)
+        public static bool Login(string username, string password, string role)
         {
             bool status = false;
 
@@ -21,7 +21,21 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string query = $"SELECT * FROM Users WHERE Username = @username AND Password = @password";
+
+                    string query = "";
+
+                    switch (role)
+                    {
+                        case "Admin":
+                            query = $"SELECT * FROM Users WHERE Username = @username AND Password = @password AND Role = 'Admin'";
+                            break;
+                        case "Donor":
+                            query = $"SELECT * FROM Users WHERE Username = @username AND Password = @password AND Role = 'Donor'";
+                            break;
+                        case "Volunteer":
+                            query = $"SELECT * FROM Users WHERE Username = @username AND Password = @password AND Role = 'Volunteer'";
+                            break;
+                    }
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
@@ -40,24 +54,6 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
                                 CurrentUser.Username = username;
                                 CurrentUser.Password = password;
 
-                                while (reader.Read())
-                                {
-                                    if (reader.GetString(reader.GetOrdinal("Role")) == "Admin")
-                                    {
-                                        // GO TO ADMIN MENU
-
-                                        CurrentUser.Role = "Admin";
-                                    }
-
-                                    else if (reader.GetString(reader.GetOrdinal("Role")) == "Donor")
-                                    {
-                                        // GO TO Donor MENU
-
-                                        CurrentUser.Role = "User";
-                                    }
-
-                                    else if 
-                                }
                             }
 
                             else
