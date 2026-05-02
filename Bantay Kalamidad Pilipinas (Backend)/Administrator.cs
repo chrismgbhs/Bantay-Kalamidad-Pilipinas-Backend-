@@ -156,6 +156,11 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
 
                 while (true)
                 {
+                    Console.Write
+                }
+
+                while (true)
+                {
                     Console.Write("Quantity: ");
                     if (int.TryParse(Console.ReadLine(), out quantity) && quantity > 0)
                     {
