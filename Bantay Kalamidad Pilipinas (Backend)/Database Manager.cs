@@ -523,5 +523,69 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
             }
         }
 
+        /// <summary>
+        /// Adds a new rescue operation record linking an event and location with the specified start date and rescue status to the database.
+        /// </summary>
+        /// <param name="eventID"></param>
+        /// <param name="locationID"></param>
+        /// <param name="dateStarted"></param>
+        /// <param name="rescueStatus"></param>
+        public static void AddRescueOperation(string eventID, string locationID, DateTime dateStarted, string rescueStatus)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string query = $"usp_AddRescueOperation (@eventID = '{eventID}', @locationID = '{locationID}', @dateStarted = '{dateStarted}', @rescueStatus = '{rescueStatus}')";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Rescue Operation added successfully.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Failed to add Rescue Operation.");
+                        }
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        public static void AddVolunteer(string name, string organization, string contactNumber)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string query = $"usp_AddVolunteer (@volunteerName = '{name}', @organization = '{organization}', @contactNumber = '{contactNumber}')";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Volunteer added successfully.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Failed to add Volunteer.");
+                        }
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
     }
 }

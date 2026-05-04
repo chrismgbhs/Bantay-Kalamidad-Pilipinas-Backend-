@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.SymbolStore;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -85,19 +86,180 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
                 case "8":
                     AddRescue();
                     break;
+
+                case "9":
+                    AddVolunteer();
+                    break;
             }
         }
+
+        // OTHER MANAGEMENT FUNCTIONALITIES
 
         public static void WasteManagement() 
         {
             Console.WriteLine("Waste management functionality is currently under development. Please check back later for updates.");
         }
+        public static void AddVolunteerOperation()
+        {
+
+        }
 
         //ADDING FUNCTIONALITY
 
+        public static void AddVolunteer()
+        {
+            string name;
+            string organization;
+            string contactNumber;
+
+            while (true)
+            {
+                Console.Write("Name: ");
+                name = Console.ReadLine().Trim();
+
+                if (name == "" || name == " ")
+                {
+                    Console.WriteLine("❌ Name cannot be empty. Please enter a valid name.");
+                }
+
+                else
+                {
+                    break;
+                }
+            }
+
+            while (true)
+            {
+                Console.Write("Organization: ");
+                organization = Console.ReadLine().Trim();
+
+                if (organization == "" || organization == " ")
+                {
+                    Console.WriteLine("❌ Organization cannot be empty. Please enter a valid organization.");
+                }
+
+                else
+                {
+                    break;
+                }
+            }
+
+            while (true)
+            {
+                Console.Write("Contact Number: ");
+                contactNumber = Console.ReadLine().Trim();
+
+                if (contactNumber == "" || contactNumber == " ")
+                {
+                    Console.WriteLine("❌ Contact number cannot be empty. Please enter a valid contact number.");
+                }
+
+                else
+                {
+                    break;
+                }
+            }
+
+            Database_Manager.AddVolunteer(name, organization, contactNumber);
+
+            while (true)
+            {
+                Console.Write("Want to assign volunteer to operation (yes/no): ");
+                string response = Console.ReadLine().Trim().ToLower();
+
+                if (response == "yes")
+                {
+                    AssignVolunteerToOperation();
+                    break;
+                }
+
+                else if (response == "no")
+                {
+                    break;
+                }
+
+                else
+                {
+                    Console.WriteLine("❌ Invalid response. Please enter 'yes' or 'no'.");
+                }
+            }
+
+
+        }
+
+            /// <summary>
+            /// Adds a new rescue operation to the database by prompting the user for the event ID, location ID, date started, and rescue status. The method validates the input to ensure that the event ID and location ID exist in the database and that the rescue status is one of the accepted values ("ongoing", "completed", or "pending"). It then calls the Database_Manager.AddRescueOperation method to save the rescue information to the database. This method is intended for use by administrators to manage and track rescue operations during disaster response efforts.
+            /// </summary>
         public static void AddRescue() 
         {
-            Console.WriteLine("Rescue operation functionality is currently under development. Please check back later for updates.");
+            string eventID;
+            string locationID;
+            DateTime dateStarted;
+            string rescueStatus;
+            Console.WriteLine("Please choose the event from the list below:");
+            Database_Manager.ShowTable("Disaster Event");
+
+            while (true)
+            {
+                bool result;
+                Console.Write("Event ID: ");
+                eventID = Console.ReadLine().Trim();
+
+                Database_Manager.ShowTableWithCondition("Disaster Event", $"Event_ID = '{eventID}'", out result);
+
+                if (result)
+                {
+
+                   break;
+                }
+
+                else
+                {
+                    Console.WriteLine($"❌ Event ID {eventID} is invalid. Please try again.");
+                }
+            }
+
+            Console.WriteLine("Please choose the location from the list below:");
+            Database_Manager.ShowTable("Location");
+
+            while (true)
+            {
+                bool result;
+                Console.Write("Location ID: ");
+                locationID = Console.ReadLine().Trim();
+
+                Database_Manager.ShowTableWithCondition("Location", $"Location_ID = '{locationID}'", out result);
+
+                if (result)
+                {
+                    break;
+                }
+
+                else
+                {
+                    Console.WriteLine($"❌ Location ID {locationID} is invalid. Please try again.");
+                }
+            }
+
+            dateStarted = DatePicker();
+
+            while (true)
+            {
+                Console.Write("Rescue status: ");
+                rescueStatus = Console.ReadLine().Trim();
+
+                if (rescueStatus == "ongoing" || rescueStatus == "completed" || rescueStatus == "pending")
+                {
+                    break;
+                }
+
+                else
+                {
+                    Console.WriteLine("❌ Invalid status. Please enter 'ongoing', 'completed', or 'pending'.");
+                }
+            }
+
+            Database_Manager.AddRescueOperation(eventID, locationID, dateStarted, rescueStatus);
         }
 
         /// <summary>
@@ -647,6 +809,5 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
                 Database_Manager.AddPledgeItem(item, quantity, selectedDate);
             }
         }
-
     }
 }
