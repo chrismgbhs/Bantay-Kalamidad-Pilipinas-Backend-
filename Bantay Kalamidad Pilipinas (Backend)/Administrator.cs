@@ -45,9 +45,10 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
             Console.WriteLine("3. Centers");
             Console.WriteLine("4. Locations");
             Console.WriteLine("5. Distribution");
-            Console.WriteLine("6. Waste Management");
-            Console.WriteLine("7. Rescue Operations");
-            Console.WriteLine("8. Volunteers");
+            Console.WriteLine("6. Rescue Operation");
+            Console.WriteLine("7. Waste Management");
+            Console.WriteLine("8. Rescue Operations");
+            Console.WriteLine("9. Volunteers");
             Console.Write("Response: ");
             string choice = Console.ReadLine();
 
@@ -72,13 +73,156 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
                 case "5":
                     AddDistribution();
                     break;
+
+                case "6":
+                    AddDelivery();
+                    break;
+
+                case "7":
+                    WasteManagement();
+                    break;
+
+                case "8":
+                    AddRescue();
+                    break;
             }
+        }
+
+        public static void WasteManagement() 
+        {
+            Console.WriteLine("Waste management functionality is currently under development. Please check back later for updates.");
+        }
+
+        //ADDING FUNCTIONALITY
+
+        public static void AddRescue() 
+        {
+            Console.WriteLine("Rescue operation functionality is currently under development. Please check back later for updates.");
+        }
+
+        /// <summary>
+        /// Adds a new delivery schedule to the database by prompting the user for the distribution ID, delivery date, and delivery status. The method validates the input to ensure that the distribution ID exists in the database and that the delivery status is one of the accepted values ("delivered", "pending", or "in transit"). It then calls the Database_Manager.AddDeliverySchedule method to save the delivery information to the database. This method is intended for use by administrators to manage and track the delivery of donated items to beneficiaries or evacuation centers as part of disaster response efforts.
+        /// </summary>
+        public static void AddDelivery()
+        {
+            string distributionID;
+            string status;
+            DateTime deliveryDate;
+            Console.WriteLine("Please select the distribution from the list below:");
+            Database_Manager.ShowTable("Distribution");
+
+            while (true)
+            {
+                bool result;
+                Console.Write("Distribution ID: ");
+                distributionID = Console.ReadLine().Trim();
+
+                Database_Manager.ShowTableWithCondition("Distribution", $"Distribution_ID = '{distributionID}'", out result);
+                
+                if (result)
+                {
+                    break;
+                }
+            }
+
+            deliveryDate = DatePicker();
+
+            while (true)
+            {
+                Console.Write("Delivery status: ");
+                status = Console.ReadLine().Trim().ToLower();
+
+                if (status == "delivered" || status == "pending" || status == "in transit")
+                {
+                    break;
+                }
+
+                else
+                {
+                    Console.WriteLine("❌ Invalid status. Please enter 'delivered', 'pending', or 'in transit'.");
+                }
+            }
+
+            Database_Manager.AddDeliverySchedule(distributionID, deliveryDate, status);
+
         }
 
         /// <summary>
         /// Adds a new distribution record to the database. This method is currently a placeholder and does not contain any implementation. It is intended to be developed in the future to allow administrators to record the distribution of donated items to beneficiaries or evacuation centers. The method will likely involve prompting the user for relevant information such as the item being distributed, the quantity, the recipient, and the date of distribution, and then calling a corresponding method in the Database_Manager class to save this information to the database.
         /// </summary>
-        public static void AddDistribution() { }
+        public static void AddDistribution() 
+        {
+            string benificiaryID;
+            string eventID;
+            string centerID;
+            DateTime dateDistributed;
+            Console.WriteLine("Please select the benificiary from the list below:");
+            Database_Manager.ShowTable("Benificiary");
+
+            while (true)
+            {
+                bool result;
+                Console.Write("Benificiary ID: ");
+                benificiaryID = Console.ReadLine().Trim();
+                Database_Manager.ShowTableWithCondition("Benificiary", $"Benificiary_ID = '{benificiaryID}'", out result);
+
+                if (result)
+                {
+                    break;
+                }
+
+                else
+                {
+                    Console.WriteLine($"❌ Benificiary ID {benificiaryID} is invalid. Please try again.");
+                }
+            }
+
+            Console.WriteLine("Please select the event from the list below:");
+            Database_Manager.ShowTable("Event");
+
+            while (true)
+            {
+                bool result;
+                Console.Write("Event ID: ");
+                eventID = Console.ReadLine().Trim();
+                Database_Manager.ShowTableWithCondition("[Disaster Event]", $"Event_ID = '{eventID}'", out result);
+
+                if (result)
+                {
+                    break;
+                }
+
+                else
+                {
+                    Console.WriteLine($"❌ Event ID {eventID} is invalid. Please try again.");
+                }
+            }
+
+            Console.WriteLine("Please select the center from the list below:");
+            Database_Manager.ShowTable("Center");
+
+            while (true)
+            {
+                bool result;
+                Console.Write("Center ID: ");
+                centerID = Console.ReadLine().Trim();
+                Database_Manager.ShowTableWithCondition("[Evacuation Center]", $"Center_ID = '{centerID}'", out result);
+
+                if (result)
+                {
+                    break;
+                }
+
+                else
+                {
+                    Console.WriteLine($"❌ Center ID {centerID} is invalid. Please try again.");
+                }
+            }
+
+            dateDistributed = DatePicker();
+
+            Database_Manager.AddDistribution(benificiaryID, eventID, centerID, dateDistributed);
+        }
 
         /// <summary>
         /// Adds a new location to the database by prompting the user for the barangay, city, and province. The method validates the input to ensure that none of the fields are left empty or contain only whitespace. If the input is valid, it calls the Database_Manager.AddLocation method to add the location to the database. The method provides feedback to the user throughout the process, indicating any errors in the input and confirming successful addition of the location.

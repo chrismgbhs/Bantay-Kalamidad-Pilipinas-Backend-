@@ -212,11 +212,9 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string query = "usp_AddPledge (@donorID, @pledgeDate);";
+                    string query = $"usp_AddPledge (@donorID = '{donorID}', @pledgeDate = '{pledgeDate}');";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@donorID", donorID);
-                        command.Parameters.AddWithValue("@pledgeDate", pledgeDate);
                         connection.Open();
                         int rowsAffected = command.ExecuteNonQuery();
                         if (rowsAffected > 0)
@@ -250,12 +248,9 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string query = "usp_AddPledgeItem (@itemName, @quantity, @expectedDeliveryDate);";
+                    string query = $"usp_AddPledgeItem (@itemName = '{itemName}', @quantity = {quantity}, @expectedDeliveryDate = '{deliveryDate}');";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@itemName", itemName);
-                        command.Parameters.AddWithValue("@quantity", quantity);
-                        command.Parameters.AddWithValue("@expectedDeliveryDate", deliveryDate);
                         connection.Open();
                         int rowsAffected = command.ExecuteNonQuery();
                         if (rowsAffected > 0)
@@ -291,12 +286,9 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string query = "usp_AddDonation (@donorID, @eventID, @dateReceived);";
+                    string query = $"usp_AddDonation (@donorID = '{donorID}', @eventID = '{eventID}', @dateReceived = '{dateReceived}');";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@donorID", donorID);
-                        command.Parameters.AddWithValue("@eventID", eventID);
-                        command.Parameters.AddWithValue("@dateReceived", dateReceived);
                         connection.Open();
                         int rowsAffected = command.ExecuteNonQuery();
                         if (rowsAffected > 0)
@@ -329,15 +321,9 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string query = "usp_AddDonatedItem (@itemName, @quantity, @unit, @category, @expDate, @location)";
+                    string query = $"usp_AddDonatedItem (@itemName = '{itemName}', @quantity = {quantity}, @unit = '{unit}', @category = '{category}', @expDate = '{expDate}', @location = '{location}')";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@itemName", itemName);
-                        command.Parameters.AddWithValue("@quantity", quantity);
-                        command.Parameters.AddWithValue("@unit", unit);
-                        command.Parameters.AddWithValue("@category", category);
-                        command.Parameters.AddWithValue("@expDate", @expDate);
-                        command.Parameters.AddWithValue("@location", @location);
                         connection.Open();
                         int rowsAffected = command.ExecuteNonQuery();
                         if (rowsAffected > 0)
@@ -370,12 +356,9 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string query = "usp_AddBeneficiary (@name, @category, @centerID)";
+                    string query = $"usp_AddBeneficiary (@name = '{name}', @category = '{category}', @centerID = '{centerID}')";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@name", name);
-                        command.Parameters.AddWithValue("@category", category);
-                        command.Parameters.AddWithValue("@centerID", centerID);
                         connection.Open();
                         int rowsAffected = command.ExecuteNonQuery();
                         if (rowsAffected > 0)
@@ -408,7 +391,7 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string query = "usp_AddCenter (@centerName, @locationID, @capacity)";
+                    string query = $"usp_AddCenter (@centerName = '{name}', @locationID = '{locationID}', @capacity = {capacity})";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@centerName", name);
@@ -446,12 +429,9 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string query = "usp_AddLocation (@barangay, @city, @province)";
+                    string query = $"usp_AddLocation (@barangay = '{barangay}', @city = '{city}', @province = '{province}')";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@barangay", barangay);
-                        command.Parameters.AddWithValue("@city", city);
-                        command.Parameters.AddWithValue("@province", province);
                         connection.Open();
                         int rowsAffected = command.ExecuteNonQuery();
                         if (rowsAffected > 0)
@@ -461,6 +441,77 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
                         else
                         {
                             Console.WriteLine("Failed to add Location.");
+                        }
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Adds a new distribution record linking a beneficiary, event, and center with the specified distribution date to the database.
+        /// </summary>
+        /// <param name="benificiaryID"></param>
+        /// <param name="eventID"></param>
+        /// <param name="centerID"></param>
+        /// <param name="dateDistributed"></param>
+        public static void AddDistribution(string benificiaryID, string eventID, string centerID, DateTime dateDistributed)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string query = $"usp_AddDistribution (@benificiaryID = '{benificiaryID}', @eventID = '{eventID}', @centerID = '{centerID}',  @dateDistributed = '{dateDistributed}')";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Distribution added successfully.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Failed to add Distribution.");
+                        }
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Adds a new delivery schedule record linking a distribution with the specified delivery date and status to the database.
+        /// </summary>
+        /// <param name="distributionID"></param>
+        /// <param name="deliveryDate"></param>
+        /// <param name="deliveryStatus"></param>
+        public static void AddDeliverySchedule(string distributionID, DateTime deliveryDate, string deliveryStatus)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string query = $"usp_AddDeliverySchedule (@distributionID = '{distributionID}', @deliveryDate = '{deliveryDate}', @deliveryStatus = '{deliveryStatus}')";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Delivery Schedule added successfully.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Failed to add Delivery Schedule.");
                         }
                     }
                 }
