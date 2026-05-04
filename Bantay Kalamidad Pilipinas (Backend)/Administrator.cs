@@ -56,7 +56,232 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
                 case "1":
                     AddDonation();
                     break;
+
+                case "2":
+                    AddBenificiary();
+                    break;
+
+                case "3":
+                    AddCenter();
+                    break;
+
+                case "4":
+                    AddLocation();
+                    break;
+
+                case "5":
+                    AddDistribution();
+                    break;
             }
+        }
+
+        /// <summary>
+        /// Adds a new distribution record to the database. This method is currently a placeholder and does not contain any implementation. It is intended to be developed in the future to allow administrators to record the distribution of donated items to beneficiaries or evacuation centers. The method will likely involve prompting the user for relevant information such as the item being distributed, the quantity, the recipient, and the date of distribution, and then calling a corresponding method in the Database_Manager class to save this information to the database.
+        /// </summary>
+        public static void AddDistribution() { }
+
+        /// <summary>
+        /// Adds a new location to the database by prompting the user for the barangay, city, and province. The method validates the input to ensure that none of the fields are left empty or contain only whitespace. If the input is valid, it calls the Database_Manager.AddLocation method to add the location to the database. The method provides feedback to the user throughout the process, indicating any errors in the input and confirming successful addition of the location.
+        /// </summary>
+        public static void AddLocation()
+        {
+            string barangay;
+            string city;
+            string province;
+
+            while (true)
+            {
+                Console.Write("Barangay: ");
+                barangay = Console.ReadLine().Trim();
+
+                if (barangay == "" || barangay == " ")
+                {
+                    Console.WriteLine("❌ Barangay cannot be empty. Please enter a valid barangay.");
+                }
+
+                else
+                {
+                    break;
+                }
+            }
+
+            while (true)
+            {
+                Console.Write("City: ");
+                city = Console.ReadLine().Trim();
+
+                if (city == "" || city == " ")
+                {
+                    Console.WriteLine("❌ City cannot be empty. Please enter a valid city.");
+                }
+
+                else
+                {
+                    break;
+                }
+            }
+
+            while (true)
+            {
+                Console.Write("Province: ");
+                province = Console.ReadLine().Trim();
+
+                if (province == "" || province == " ")
+                {
+                    Console.WriteLine("❌ Province cannot be empty. Please enter a valid province.");
+                }
+
+                else
+                {
+                    break;
+                }
+            }
+
+            Database_Manager.AddLocation(barangay, city, province);
+        }
+
+        /// <summary>
+        /// Adds a new evacuation center to the database by prompting the user for the center's name, location ID, and capacity. The method validates the input and ensures that the location ID exists in the database before adding the center. It provides feedback to the user throughout the process and interacts with the Database_Manager class to perform the necessary database operations.
+        /// </summary>
+        public static void AddCenter()
+        {
+            string centerName;
+            string locationID;
+            int capacity;
+
+            while (true)
+            {
+                Console.Write("Center Name: ");
+                centerName = Console.ReadLine().Trim();
+
+                if (centerName == "" || centerName == " ")
+                {
+                    Console.WriteLine("❌ Center name cannot be empty. Please enter a valid center name.");
+                }
+
+                else
+                {
+                    break;
+                }
+
+            }
+
+            Console.WriteLine("Please select the location from the list below:");
+            Database_Manager.ShowTable("Location");
+
+            while (true)
+            {
+                bool result;
+                Console.Write("Location ID: ");
+                locationID = Console.ReadLine().Trim();
+                Database_Manager.ShowTableWithCondition("Location", $"Location_ID = '{locationID}'", out result);
+
+                if (result)
+                {
+                    break;
+                }
+
+                else
+                {
+                    Console.WriteLine($"❌ Location ID {locationID} is invalid. Please try again.");
+                }
+            }
+
+            while (true)
+            {
+                Console.Write("Capacity: ");
+                capacity = int.Parse(Console.ReadLine());
+
+                if (capacity > 0) 
+                {
+                    break;
+                }
+
+                else
+                {
+                    Console.WriteLine("❌ Capacity must be a positive integer. Please enter a valid capacity.");  
+                }
+            }
+
+            Database_Manager.AddCenter(centerName, locationID, capacity);
+        }
+
+        /// <summary>
+        /// Adds a new beneficiary to the database by prompting the user for the beneficiary's name, category, and associated evacuation center ID. The method validates the input and ensures that the center ID exists in the database before adding the beneficiary. It provides feedback to the user throughout the process and interacts with the Database_Manager class to perform the necessary database operations.
+        /// </summary>
+        public static void AddBenificiary()
+        {
+            string name;
+            string category;
+            string centerID;
+
+            while (true)
+            {
+                Console.Write("Name: ");
+                name = Console.ReadLine().Trim();
+
+                if (name == "" || name == " ")
+                {
+                    Console.WriteLine("❌ Name cannot be empty. Please enter a valid name.");
+                }
+
+                else
+                {
+                    break;
+                }
+            }
+
+
+            while (true)
+            {
+                Console.Write("Category: ");
+                category = Console.ReadLine().Trim();
+
+                if (category == "" || category == " ")
+                {
+                    Console.WriteLine("❌ Category cannot be empty. Please enter a valid category.");
+                }
+
+                else
+                {
+                    break;
+                }
+            }
+
+
+            Console.WriteLine("Please select the center from the list below:");
+            Database_Manager.ShowTable("[Evacuation Center]");
+
+            while (true)
+            {
+                Console.Write("Center ID: ");
+                centerID = Console.ReadLine().Trim();
+
+                if (centerID == "" || centerID == " ")
+                {
+                    Console.WriteLine("❌ Center ID cannot be empty. Please enter a valid center ID.");
+                }
+
+                else
+                {
+                    bool result;
+                    Database_Manager.ShowTableWithCondition("[Evacuation Center]", $"Center_ID = '{centerID}'", out result);
+
+                    if (result)
+                    {
+                        break;
+                    }
+
+                    else
+                    {
+                        Console.WriteLine($"❌ Center ID {centerID} is invalid. Please try again.");
+                    }
+
+                }
+            }
+
+            Database_Manager.AddBenificiary(name, category, centerID);
+
         }
 
         /// <summary>
@@ -75,6 +300,9 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
             string eventID;
             string item;
             int quantity;
+            string unit;
+            string category;
+            string location;
 
             while (true) 
             {
@@ -156,17 +384,32 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
 
                 while (true)
                 {
-                    Console.Write
-                }
-
-                while (true)
-                {
                     Console.Write("Quantity: ");
                     if (int.TryParse(Console.ReadLine(), out quantity) && quantity > 0)
                     {
-                        Database_Manager.AddDonatedItem(item, quantity);
+                        quantity = int.Parse(Console.ReadLine());
+                        break;
+                    }
+
+                    else
+                    {
+                        Console.WriteLine("❌ Quantity must be a positive integer. Please enter a valid quantity.");
                     }
                 }
+
+                Console.Write("Unit: ");
+                unit = Console.ReadLine().Trim();
+
+                Console.Write("Category: ");
+                category = Console.ReadLine().Trim();
+
+                Console.Write("Location: ");
+                location = Console.ReadLine().Trim();
+
+                Console.WriteLine("Please choose expiration date.");
+                DateTime expDate = DatePicker();
+
+                Database_Manager.AddDonatedItem(item, quantity, unit, category, expDate, location);
             }
         }
 

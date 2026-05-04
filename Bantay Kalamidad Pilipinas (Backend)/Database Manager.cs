@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Bantay_Kalamidad_Pilipinas__Backend_
@@ -322,17 +323,21 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
         /// operation fails, an error message is written to the console.</remarks>
         /// <param name="itemName">The name of the donated item to add. Cannot be null or empty.</param>
         /// <param name="quantity">The quantity of the donated item to add. Must be greater than zero.</param>
-        public static void AddDonatedItem(string itemName, int quantity)
+        public static void AddDonatedItem(string itemName, int quantity, string unit, string category, DateTime @expDate, string @location)
         {
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string query = "usp_AddDonatedItem (@itemName, @quantity);";
+                    string query = "usp_AddDonatedItem (@itemName, @quantity, @unit, @category, @expDate, @location)";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@itemName", itemName);
                         command.Parameters.AddWithValue("@quantity", quantity);
+                        command.Parameters.AddWithValue("@unit", unit);
+                        command.Parameters.AddWithValue("@category", category);
+                        command.Parameters.AddWithValue("@expDate", @expDate);
+                        command.Parameters.AddWithValue("@location", @location);
                         connection.Open();
                         int rowsAffected = command.ExecuteNonQuery();
                         if (rowsAffected > 0)
@@ -342,6 +347,120 @@ namespace Bantay_Kalamidad_Pilipinas__Backend_
                         else
                         {
                             Console.WriteLine("Failed to add pledge.");
+                        }
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Adds a new beneficiary record with the specified name, category, and center ID to the database.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="category"></param>
+        /// <param name="centerID"></param>
+        public static void AddBenificiary(string name, string category, string centerID)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string query = "usp_AddBeneficiary (@name, @category, @centerID)";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@name", name);
+                        command.Parameters.AddWithValue("@category", category);
+                        command.Parameters.AddWithValue("@centerID", centerID);
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Beneficiary added successfully.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Failed to add beneficiary.");
+                        }
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Adds a new center record with the specified name, location ID, and capacity to the database.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="locationID"></param>
+        /// <param name="capacity"></param>
+        public static void AddCenter(string name, string locationID, int capacity)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string query = "usp_AddCenter (@centerName, @locationID, @capacity)";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@centerName", name);
+                        command.Parameters.AddWithValue("@locationID", locationID);
+                        command.Parameters.AddWithValue("@capacity", capacity);
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Center added successfully.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Failed to add center.");
+                        }
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Adds a new location record with the specified barangay, city, and province to the database.
+        /// </summary>
+        /// <param name="barangay"></param>
+        /// <param name="city"></param>
+        /// <param name="province"></param>
+        public static void AddLocation (string barangay, string city, string province)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string query = "usp_AddLocation (@barangay, @city, @province)";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@barangay", barangay);
+                        command.Parameters.AddWithValue("@city", city);
+                        command.Parameters.AddWithValue("@province", province);
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Location added successfully.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Failed to add Location.");
                         }
                     }
                 }
